@@ -11,7 +11,6 @@ Viking.prototype.theLife = function(){
 }
 
 Viking.prototype.attack = function(victim) {
-	console.log(victim.health);
 	victim.health = victim.health - this.strength;
 	if (victim.health < 1){
 		victim.life = false;
@@ -35,7 +34,7 @@ Saxon.prototype.theLife = Viking.prototype.theLife;
 function createRandomsSaxons (numberOfSaxons){
 	var saxons = [];
 	for (var i = 0; i < numberOfSaxons; i++) {
-		var saxon = new Saxon(getRandomArbitrary(5,20),	getRandomArbitrary(1,5));
+		var saxon = new Saxon(getRandomArbitrary(10,20),	getRandomArbitrary(5,10));
 		saxons[i] = saxon;
 	};
 	console.log("There are " + saxons.length + " saxons in the village.");
@@ -64,14 +63,14 @@ function pit(fighter1, fighter2) {
 	}
 };
 
-function assault(vikings, saxons){
+function assault(vikingsAlive, saxonsAlive){
 	vikings.forEach(function (viking){
 		viking.shout();
 	});
 	var counter = 0;
 	var rounds = getRandomArbitrary(5,8);
-  var saxonsAlive = saxons;
-  var vikingsAlive = vikings; 
+  var saxonsInit = saxonsAlive.length;
+  var vikingsInit = vikingsAlive.length;
 
 	while(counter < rounds){	
 		counter++;
@@ -81,11 +80,13 @@ function assault(vikings, saxons){
 			vikingsAlive[i].attack( saxonsAlive[saxonsRandom]);
 			saxonsAlive[ saxonsRandom].attack( vikingsAlive[i]);
 
+
 			if(saxonsAlive[saxonsRandom].health < 1 ){
-				saxonsAlive = saxonsAlive.splice(saxonsRandom, 1);
+				saxonsAlive.splice(saxonsRandom, 1);
 			}
 			if(vikingsAlive[i].health < 1){
-				vikingsAlive = vikingsAlive.splice(i, 1);
+				vikingsAlive.splice(i, 1);
+
 			}
 
 		};
@@ -95,9 +96,10 @@ function assault(vikings, saxons){
 		}
 
 	};
+  var vikingsCasualties = checkDeathPercentage(vikingsAlive, vikingsInit);
+  var saxonsCasualties = checkDeathPercentage(saxonsAlive, saxonsInit);
 
-
-	if (checkDeathPercentage(vikings) < checkDeathPercentage(saxons) ) {
+	if ( vikingsCasualties > saxonsCasualties ) {
 		console.log("Game over");
 	}
 	else {
@@ -107,15 +109,13 @@ function assault(vikings, saxons){
 
 
 
-function checkDeathPercentage(group){
-	var casualties = 0;
-	group.forEach(function (person){
-		if (person.health < 1){
-			casualties++;
-			console.log("Muertos: " + casualties);	
-		}
-	});
-	var percentage = casualties/group.length;
+function checkDeathPercentage(groupAlive, groupInit){
+	var casualties = groupInit - groupAlive.length;
+	if (casualties === 0){
+		var percentage = 0;
+	} else{
+		var percentage = casualties/groupInit;
+	}
 	return percentage;
 }
 
@@ -125,10 +125,10 @@ function getRandomArbitrary(min,max) {
 	return Math.round(Math.random() * (max - min) +min);
 };
 
-var Roslauf = new Viking("Roslauf", 1, 10);
-var Arduin = new Viking("Arduin", 1, 10);
+var Roslauf = new Viking("Roslauf", 50, 10);
+var Arduin = new Viking("Arduin", 50, 10);
 
 
 var vikings = [Roslauf, Arduin];
-var saxons = createRandomsSaxons(getRandomArbitrary(100,150));
+var saxons = createRandomsSaxons(getRandomArbitrary(5,30));
 assault(vikings, saxons);
