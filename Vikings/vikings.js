@@ -10,14 +10,15 @@ Viking.prototype.attack = function(victim) {
 };
 
 Viking.prototype.shout = function(){
-	console.log("Aaaarrrrgggg!!!!");
+	console.log("Se van a peleeeeeeaaaaaaaaaaaaar!!!");
 };
 
 var Saxon = function(){
 	this.health = getRandomArbitrary(5,20);
 	this.strength = getRandomArbitrary(1,5);
-
 };
+
+Saxon.prototype.attack = Viking.prototype.attack;
 
 function createRandomsSaxons (numberOfSaxons){
 	var saxons = [];
@@ -55,11 +56,22 @@ function assault(vikings, saxons){
 	vikings.forEach(function (viking){
 		viking.shout();
 	});
-	while(checkDeath(viking) === false && checkDeath(saxons) === false){
-		
+	while(checkDeath(viking) === false && checkDeath(saxons) === false){	
+		vikings.forEach(function (viking) {
+			var saxonsRandom = getRandomArbitrary(0,saxons.length);
+			vikings[vikingRandom].attack(saxons[saxonsRandom]);
+			saxons[saxonsRandom].attack(vikings[vikingRandom]);
+		}
 	}
-
+	if (checkDeath(vikings) === true) {
+		console.log("Game over")
+	}
+	else {
+		assault(vikings, saxons);
+	}
 }
+
+
 
 function checkDeath(group){
 	var booleanDeath = false;
