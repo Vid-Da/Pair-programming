@@ -9,11 +9,32 @@ Viking.prototype.attack = function(victim) {
 	victim.health = victim.health - this.strength;
 };
 
+Viking.prototype.shout = function(){
+	console.log("Aaaarrrrgggg!!!!");
+};
+
+var Saxon = function(){
+	this.health = getRandomArbitrary(5,20);
+	this.strength = getRandomArbitrary(1,5);
+
+};
+
+function createRandomsSaxons (numberOfSaxons){
+	var saxons = [];
+	for (var i = 0; i < numberOfSaxons; i++) {
+		var saxon = new Saxon();
+		saxons[i] = saxon;
+	};
+	console.log("There are " + saxons.length + " saxons in the village.");
+	return saxons;
+}
+
+
 function pit(fighter1, fighter2) {
 	var fighters = [fighter1, fighter2];
 	var counter = 0;
 	while (fighter1.health > 20  && fighter2.health > 20 && counter < 10) {
-		var random = Math.round(getRandomArbitrary(0,1));
+		var random = getRandomArbitrary(0,1);
 		++counter;
 		if (random === 0) {
 			fighters[0].attack(fighters[1]);
@@ -30,11 +51,36 @@ function pit(fighter1, fighter2) {
 	}
 };
 
+function assault(vikings, saxons){
+	vikings.forEach(function (viking){
+		viking.shout();
+	});
+	while(checkDeath(viking) === false && checkDeath(saxons) === false){
+		
+	}
+
+}
+
+function checkDeath(group){
+	var booleanDeath = false;
+	group.forEach(function (person){
+		if (person.health < 1){
+			booleanDeath = true;
+		}
+	});
+	return booleanDeath;
+}
+
+
+
 function getRandomArbitrary(min,max) {
-	return Math.random() * (max - min) +min;
+	return Math.round(Math.random() * (max - min) +min);
 };
 
 var Roslauf = new Viking("Roslauf", 50, 10);
 var Arduin = new Viking("Arduin", 50, 10);
 
-pit(Roslauf, Arduin);
+
+var vikings = [Roslauf, Arduin];
+var saxons = createRandomsSaxons(getRandomArbitrary(5,20));
+assault(vikings, saxons);
